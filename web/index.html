@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Algoritmo genético · Portafolio de inversión</title>
+  <meta name="description" content="Visualiza cómo un algoritmo genético optimiza un portafolio de 10 activos generación tras generación.">
+  <meta name="theme-color" content="#0d1f20">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#app">Saltar al contenido</a>
+
+  <header class="hero">
+    <p class="eyebrow">Computación evolutiva</p>
+    <h1>Algoritmo genético<br><span>aplicado a un portafolio de inversión</span></h1>
+    <p class="lead">Una población de portafolios evoluciona por selección, cruza y mutación hasta encontrar el reparto de capital con mejor relación <strong>rendimiento / riesgo</strong>. Ajusta los parámetros y mira cómo mejora generación tras generación.</p>
+  </header>
+
+  <main id="app">
+    <section class="panel controls" aria-labelledby="t-params">
+      <h2 id="t-params">Parámetros</h2>
+      <form id="form" novalidate>
+        <label class="field">
+          <span>Población <output id="o-poblacion">50</output></span>
+          <input type="range" id="poblacion" min="10" max="200" step="2" value="50">
+        </label>
+        <label class="field">
+          <span>Generaciones <output id="o-generaciones">100</output></span>
+          <input type="range" id="generaciones" min="10" max="300" step="5" value="100">
+        </label>
+        <label class="field">
+          <span>Probabilidad de mutación <output id="o-mutacion">0.10</output></span>
+          <input type="range" id="mutacion" min="0" max="1" step="0.01" value="0.1">
+        </label>
+        <label class="field">
+          <span>Individuos elitistas <output id="o-elitismo">2</output></span>
+          <input type="range" id="elitismo" min="0" max="20" step="1" value="2">
+        </label>
+        <label class="field seed">
+          <span>Semilla <small>(vacía = aleatoria)</small></span>
+          <input type="number" id="semilla" inputmode="numeric" placeholder="p. ej. 42" min="0" step="1">
+        </label>
+        <button type="submit" class="btn primary" id="ejecutar">Ejecutar algoritmo</button>
+        <p id="error" class="error" role="alert" hidden></p>
+      </form>
+    </section>
+
+    <section class="results" aria-live="polite" aria-labelledby="t-res">
+      <h2 id="t-res" class="sr-only">Resultados</h2>
+      <div class="kpis">
+        <article class="kpi"><span>Fitness</span><strong id="k-fitness">—</strong></article>
+        <article class="kpi"><span>Rendimiento</span><strong id="k-rend">—</strong></article>
+        <article class="kpi"><span>Riesgo</span><strong id="k-riesgo">—</strong></article>
+        <article class="kpi"><span>Generación</span><strong id="k-gen">—</strong></article>
+      </div>
+
+      <div class="panel">
+        <h3>Mejor portafolio de la generación</h3>
+        <ul id="pesos" class="bars"></ul>
+      </div>
+    </section>
+
+    <section class="panel chart-card fit" aria-labelledby="t-fit">
+      <h3 id="t-fit">Fitness por generación</h3>
+      <canvas id="c-fit" role="img" aria-label="Evolución del mejor fitness y del fitness promedio"></canvas>
+      <p class="legend"><i class="dot best"></i> Mejor <i class="dot avg"></i> Promedio</p>
+    </section>
+
+    <section class="panel chart-card pop" aria-labelledby="t-pop">
+      <h3 id="t-pop">Población: riesgo vs. rendimiento</h3>
+      <canvas id="c-pop" role="img" aria-label="Dispersión de los portafolios de la población actual"></canvas>
+      <p class="legend"><i class="dot best"></i> Generación actual <i class="dot ghost"></i> Población inicial</p>
+    </section>
+
+    <section class="panel player" aria-label="Reproductor de generaciones">
+      <button class="btn" id="play" type="button" disabled aria-label="Reproducir">▶</button>
+      <input type="range" id="gen" min="0" max="0" value="0" step="1" disabled aria-label="Generación">
+      <label class="speed">Velocidad
+        <select id="vel">
+          <option value="160">Lenta</option>
+          <option value="60" selected>Normal</option>
+          <option value="20">Rápida</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="panel how">
+      <h2>Cómo funciona</h2>
+      <ol>
+        <li><strong>Individuo:</strong> 10 pesos en bloques de 5 % que suman 100 %.</li>
+        <li><strong>Fitness:</strong> rendimiento esperado ÷ riesgo, con riesgo = √(wᵀ Σ w).</li>
+        <li><strong>Selección:</strong> ruleta proporcional al fitness.</li>
+        <li><strong>Cruza:</strong> de un punto; el hijo se repara para sumar exactamente 100 %.</li>
+        <li><strong>Mutación:</strong> se mueve un bloque de 5 % de un activo a otro.</li>
+        <li><strong>Elitismo:</strong> los mejores pasan intactos a la siguiente generación.</li>
+      </ol>
+      <details>
+        <summary>Datos de entrada (11 observaciones × 10 activos)</summary>
+        <div class="table-wrap"><table id="datos"></table></div>
+        <p class="note">Los valores se usan tal como están en la serie original (no se transforman a rendimientos).</p>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <a href="https://github.com/Sandrez12/Algoritmo-gen-tico-aplicado-a-un-portafolio-de-inversi-n">Código en GitHub</a> · Hecho por Andrés Felipe Joya Buitrago
+  </footer>
+
+  <script src="ga.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
